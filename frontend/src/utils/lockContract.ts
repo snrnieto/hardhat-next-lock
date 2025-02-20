@@ -15,12 +15,15 @@ export const LOCK_CONTRACT_ABI = [
 ];
 
 export const getLockContract = async () => {
+    if (typeof window === 'undefined') return null;
     return await getContractInstance(LOCK_CONTRACT_ADDRESS, LOCK_CONTRACT_ABI);
 };
 
 export const deposit = async (durationInDays: number, amount: string) => {
+    if (typeof window === 'undefined') return null;
     try {
         const contract = await getLockContract();
+        if (!contract) throw new Error('Contract initialization failed');
         const tx = await contract.deposit(durationInDays, { value: ethers.parseEther(amount) });
         await tx.wait();
         return tx;
@@ -31,8 +34,10 @@ export const deposit = async (durationInDays: number, amount: string) => {
 };
 
 export const withdraw = async () => {
+    if (typeof window === 'undefined') return null;
     try {
         const contract = await getLockContract();
+        if (!contract) throw new Error('Contract initialization failed');
         const tx = await contract.withdraw();
         await tx.wait();
         return tx;
@@ -43,8 +48,10 @@ export const withdraw = async () => {
 };
 
 export const getBalance = async () => {
+    if (typeof window === 'undefined') return '0';
     try {
         const contract = await getLockContract();
+        if (!contract) return '0';
         const balance = await contract.getBalance(); 
         return ethers.formatEther(balance);
     } catch (error) {
@@ -54,8 +61,10 @@ export const getBalance = async () => {
 };
 
 export const getUnlockTime = async () => {
+    if (typeof window === 'undefined') return 0;
     try {
         const contract = await getLockContract();
+        if (!contract) return 0;
         const unlockTime = await contract.getUnlockTime();
         return Number(unlockTime);
     } catch (error) {

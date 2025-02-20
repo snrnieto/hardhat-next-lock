@@ -1,11 +1,18 @@
-import LockInterface from './components/LockInterface';
-import Navbar from './components/Navbar';
+'use client';
+
+import dynamic from 'next/dynamic';
+
+const LockProviderClient = dynamic(
+  () => import('../context/LockContext').then(mod => mod.LockProvider),
+  { ssr: false }
+);
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <LockInterface />
-    </div>
+    <LockProviderClient>
+      <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        {/* Your existing page content */}
+      </main>
+    </LockProviderClient>
   );
 }

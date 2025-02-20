@@ -3,16 +3,16 @@
 import { ethers } from 'ethers';
 
 export const getEthereumProvider = () => {
-    if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
-        return new ethers.BrowserProvider(window.ethereum);
-    }
-    return null;
+    if (typeof window === 'undefined') return null;
+    if (typeof window.ethereum === 'undefined') return null;
+    return new ethers.BrowserProvider(window.ethereum);
 };
 
 export const connectWallet = async () => {
+    if (typeof window === 'undefined') return null;
     try {
         console.log('Connecting to wallet...');
-        if (typeof window === 'undefined' || !window.ethereum) {
+        if (!window.ethereum) {
             alert('MetaMask not detected');
             throw new Error('Please install MetaMask');
         }

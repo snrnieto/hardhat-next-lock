@@ -37,7 +37,13 @@ export function LockProvider({ children }: { children: ReactNode }) {
     const [connected, setConnected] = useState(false);
     const [timeLeft, setTimeLeft] = useState('');
     const [walletBalance, setWalletBalance] = useState('0');
-    const address = window.ethereum?.selectedAddress || '';
+    const [address, setAddress] = useState('');
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.ethereum?.selectedAddress) {
+            setAddress(window.ethereum.selectedAddress);
+        }
+    }, []);
 
 
     const loadContractData = async () => {
@@ -97,18 +103,7 @@ export function LockProvider({ children }: { children: ReactNode }) {
         return new Date(timestamp * 1000).toLocaleString();
     };
 
-    const fetchWalletBalance = async () => {
-        console.log('Fetching wallet balance...');
-        if (window.ethereum && address) {
-            try {
-                const provider = new ethers.BrowserProvider(window.ethereum);
-                const balance = await provider.getBalance(address);
-                setWalletBalance(ethers.formatEther(balance));
-            } catch (error) {
-                console.error('Error fetching wallet balance:', error);
-            }
-        }
-    };
+
 
     useEffect(() => {
         loadContractData();
@@ -141,7 +136,21 @@ export function LockProvider({ children }: { children: ReactNode }) {
     }, [unlockTime]);
 
     useEffect(() => {
+        const fetchWalletBalance = async () => {
+            if (typeof window === 'undefined') return;
+            console.log('Fetching wallet balance...');
+            if (window.ethereum && address) {
+                try {
+                    const provider = new ethers.BrowserProvider(window.ethereum);
+                    const balance = await provider.getBalance(address);
+                    setWalletBalance(ethers.formatEther(balance));
+                } catch (error) {
+                    console.error('Error fetching wallet balance:', error);
+                }
+            }
+        };
         const handleAccountsChanged = async () => {
+            if (typeof window === 'undefined') return;
             setConnected(false);
             setBalance('0');
             setUnlockTime(0);
@@ -159,6 +168,7 @@ export function LockProvider({ children }: { children: ReactNode }) {
         };
 
         const handleChainChanged = async () => {
+            if (typeof window === 'undefined') return;
             const chainId = await window.ethereum?.request({ method: 'eth_chainId' });
             if (chainId !== '0xaa36a7') { // Sepolia chainId
                 try {
@@ -192,6 +202,7 @@ export function LockProvider({ children }: { children: ReactNode }) {
             }
         };
 
+        if (typeof window === 'undefined') return;
         handleChainChanged();
 
         // Listen for account and chain changes
@@ -201,7 +212,7 @@ export function LockProvider({ children }: { children: ReactNode }) {
         }
 
         return () => {
-            if (window.ethereum) {
+            if (typeof window !== 'undefined' && window.ethereum) {
                 window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
                 window.ethereum.removeListener('chainChanged', handleChainChanged);
             }
