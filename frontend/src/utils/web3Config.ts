@@ -13,7 +13,7 @@ export const connectWallet = async () => {
     try {
         console.log('Connecting to wallet...');
         if (typeof window === 'undefined' || !window.ethereum) {
-            console.error('MetaMask not detected');
+            alert('MetaMask not detected');
             throw new Error('Please install MetaMask');
         }
 
