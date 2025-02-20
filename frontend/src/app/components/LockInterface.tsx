@@ -63,7 +63,7 @@ export default function LockInterface() {
                                 />
                             </div>
                             {
-                                balance === "0" && (
+                                balance === "0" || balance==="0.0" && (
                                     <div>
                                         <label className="block text-sm font-medium mb-2 text-gray-300">Lock Duration (days)</label>
                                         <input

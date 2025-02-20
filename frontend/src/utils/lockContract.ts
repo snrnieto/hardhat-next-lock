@@ -3,7 +3,7 @@ import { getContractInstance } from './web3Config';
 import { Lock } from '../../../typechain-types';
 
 // Contract address from the deployment
-export const LOCK_CONTRACT_ADDRESS = "0x5fbdb2315678afecb367f032d93f642f64180aa3";
+export const LOCK_CONTRACT_ADDRESS = "0xb103F73A03614f69dC238552bE327e0798cF816E";
 
 // Contract ABI
 export const LOCK_CONTRACT_ABI = [

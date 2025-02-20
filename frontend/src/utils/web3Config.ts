@@ -15,6 +15,37 @@ export const connectWallet = async () => {
             throw new Error('Please install MetaMask');
         }
 
+        // Check if we're on the correct network (Sepolia)
+        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+        if (chainId !== '0xaa36a7') { // Sepolia chainId in hex
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: '0xaa36a7' }],
+                });
+            } catch (switchError: any) {
+                // This error code indicates that the chain has not been added to MetaMask
+                if (switchError.code === 4902) {
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: '0xaa36a7',
+                            chainName: 'Sepolia',
+                            nativeCurrency: {
+                                name: 'SepoliaETH',
+                                symbol: 'ETH',
+                                decimals: 18
+                            },
+                            rpcUrls: ['https://sepolia.infura.io/v3/'],
+                            blockExplorerUrls: ['https://sepolia.etherscan.io']
+                        }],
+                    });
+                } else {
+                    throw switchError;
+                }
+            }
+        }
+
         // First request account access
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
 
@@ -22,7 +53,6 @@ export const connectWallet = async () => {
             console.error('No accounts returned from MetaMask');
             throw new Error('No accounts found');
         }
-
 
         // Then get the provider and signer
         const provider = getEthereumProvider();
