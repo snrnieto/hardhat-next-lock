@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 import { getContractInstance } from './web3Config';
-import { Lock } from '../../../typechain-types';
 
 // Contract address from the deployment
 export const LOCK_CONTRACT_ADDRESS = "0xb103F73A03614f69dC238552bE327e0798cF816E";

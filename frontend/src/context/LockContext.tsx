@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
@@ -50,6 +51,7 @@ export function LockProvider({ children }: { children: ReactNode }) {
             setConnected(true);
             await loadContractData();
         } catch (error) {
+            console.error('Error connecting wallet:', error);
             setError('Failed to connect wallet');
         }
     };
