@@ -1,7 +1,14 @@
 'use client';
 
-import LockInterface from "./components/LockInterface";
-import Navbar from "./components/Navbar";
+import dynamic from 'next/dynamic';
+
+const LockInterface = dynamic(() => import('./components/LockInterface'), {
+  ssr: false
+});
+
+const Navbar = dynamic(() => import('./components/Navbar'), {
+  ssr: false
+});
 
 export default function Home() {
   return (

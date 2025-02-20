@@ -40,9 +40,20 @@ export function LockProvider({ children }: { children: ReactNode }) {
     const [address, setAddress] = useState('');
 
     useEffect(() => {
-        if (typeof window !== 'undefined' && window.ethereum?.selectedAddress) {
-            setAddress(window.ethereum.selectedAddress);
-        }
+        const initializeAddress = async () => {
+            if (typeof window === 'undefined') return;
+            if (window.ethereum?.selectedAddress) {
+                setAddress(window.ethereum.selectedAddress);
+                try {
+                    await connectWallet();
+                    setConnected(true);
+                    await loadContractData();
+                } catch (error) {
+                    console.error('Error initializing wallet:', error);
+                }
+            }
+        };
+        initializeAddress();
     }, []);
 
 

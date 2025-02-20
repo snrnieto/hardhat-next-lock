@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useLock } from '@/context/LockContext';
 
 export default function Navbar() {
@@ -15,11 +16,14 @@ export default function Navbar() {
         return address.slice(2, 4).toUpperCase();
     };
 
-    const address = window.ethereum?.selectedAddress || '';
+    const [address, setAddress] = useState('');
 
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.ethereum?.selectedAddress) {
+            setAddress(window.ethereum.selectedAddress);
+        }
+    }, []);
 
-
- 
 
     return (
         <nav className="fixed top-0 left-0 right-0 bg-gray-800/80 backdrop-blur-md border-b border-purple-500/20 z-50">
